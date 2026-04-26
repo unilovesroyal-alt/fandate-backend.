@@ -4,10 +4,12 @@ const User = require('../models/User');
 
 const router = express.Router();
 
-// Get current user's GPC card
 router.get('/me', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('username avatarUrl ggc');
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
     res.json({
       username: user.username,
       avatar: user.avatarUrl,
