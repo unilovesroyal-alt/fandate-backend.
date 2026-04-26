@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FanDate — Feed</title>
+  <style>
+    body { background: #0a0c10; color: white; font-family: system-ui; padding: 20px; }
+    .card { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 1rem; margin-bottom: 1rem; }
+    button { background: gold; color: black; padding: 0.5rem 1rem; border: none; border-radius: 40px; cursor: pointer; }
+    .gpc-card { background: rgba(0,0,0,0.7); border: 1px solid gold; border-radius: 28px; padding: 1rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>📡 FanDate</h1>
+  <button id="logoutBtn" style="background:#333; margin-bottom:1rem;">Logout</button>
+  <div id="gpcCard" class="gpc-card">Loading GPC...</div>
+  <div id="feed">Welcome to the universe. More coming soon.</div>
+  
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = '/';
+    const API_URL = window.location.origin;
+    
+    document.getElementById('logoutBtn').onclick = () => {
+      localStorage.removeItem('token');
+      window.location.href = '/';
+    };
+    
+    async function loadGPC() {
+      const res = await fetch(`${API_URL}/api/gpc/me`, {
+        headers: { 'auth-token': token }
+      });
+      const data = await res.json();
+      document.getElementById('gpcCard').innerHTML = `
+        <h3>🔺 ${data.username}</h3>
+        <p>Rank: ${data.rank} | 🔥 Aura: ${data.aura}</p>
+        <p>Exposure: ${data.exposure} | Earnings: $${data.earnings}</p>
+        <p>GPC ID: ${data.gpcId}</p>
+      `;
+    }
+    
+    loadGPC();
+  </script>
+</body>
+</html>
